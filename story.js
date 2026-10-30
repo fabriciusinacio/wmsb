@@ -39,6 +39,14 @@
     journey.style.setProperty('--day-accent', useDark ? '#124b31' : '#d5f78c');
     journey.style.setProperty('--day-line', useDark ? '#173d2b55' : '#e6f2d666');
     journey.style.setProperty('--day-screen', rgb(mix(previous.screen, next.screen, amount)));
+    // A half-circle takes the sun from the morning horizon to sunset.
+    const daylight = Math.max(0, Math.min(1, (minutes - 480) / 600));
+    const arc = Math.sin(daylight * Math.PI);
+    const warmth = Math.max(0, (minutes - 840) / 240);
+    journey.style.setProperty('--sun-x', `${7 + daylight * 86}%`);
+    journey.style.setProperty('--sun-y', `${160 - arc * 145}px`);
+    journey.style.setProperty('--sun-color', rgb(mix([255, 225, 142], [243, 133, 76], warmth)));
+    journey.style.setProperty('--sun-opacity', String(1 - Math.max(0, Math.min(1, (minutes - 1035) / 45))));
     journey.dataset.period = minutes < 720 ? 'morning' : minutes < 1020 ? 'afternoon' : 'evening';
     const label = byId('day-phase');
     if (label) label.textContent = minutes < 720 ? 'MANHÃ · UM NOVO COMEÇO' : minutes < 1020 ? 'TARDE · O DIA SEGUE' : 'ENTARDECER · ATÉ AMANHÃ';
